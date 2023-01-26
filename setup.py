@@ -5,16 +5,16 @@ from distutils.core import setup
 scripts = glob.glob('bin/*')
 
 setup(
-  name='docx2txt',
-  packages=['docx2txt'],
+  name='mlx2txt',
+  packages=['mlx2txt'],
   version='0.8',
   description='A pure python-based utility to extract text and images '
               'from docx files.',
   author='Ankush Shah',
   author_email='ankush.shah.nitk@gmail.com',
-  url='https://github.com/ankushshah89/python-docx2txt',
-  download_url='https://github.com/ankushshah89/python-docx2txt/tarball/0.8',
-  keywords=['python', 'docx', 'text', 'images', 'extract'],
+  url='https://github.com/esseivan/python-mlx2txt',
+  download_url='https://github.com/esseivan/python-mlx2txt/releases',
+  keywords=['python', 'mlx', 'text', 'extract'],
   scripts=scripts,
   classifiers=[],
 )

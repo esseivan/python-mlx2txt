@@ -78,4 +78,4 @@ def process(mlx):
 if __name__ == '__main__':
     args = process_args()
     text = process(args.mlx)
-    sys.stdout.write(text.encode('utf-8'))
+    sys.stdout.write(text)
