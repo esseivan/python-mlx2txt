@@ -14,24 +14,15 @@ nsmap = {'w': 'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}
 def process_args():
     parser = argparse.ArgumentParser(description='A pure python-based utility '
                                                  'to extract text and images '
-                                                 'from docx files.')
-    parser.add_argument("docx", help="path of the docx file")
-    parser.add_argument('-i', '--img_dir', help='path of directory '
-                                                'to extract images')
+                                                 'from mlx files.')
+    parser.add_argument("mlx", help="path of the mlx file")
 
     args = parser.parse_args()
 
-    if not os.path.exists(args.docx):
-        print('File {} does not exist.'.format(args.docx))
+    if not os.path.exists(args.mlx):
+        print('File {} does not exist.'.format(args.mlx))
         sys.exit(1)
 
-    if args.img_dir is not None:
-        if not os.path.exists(args.img_dir):
-            try:
-                os.makedirs(args.img_dir)
-            except OSError:
-                print("Unable to create img_dir {}".format(args.img_dir))
-                sys.exit(1)
     return args
 
 
@@ -69,39 +60,16 @@ def xml2text(xml):
     return text
 
 
-def process(docx, img_dir=None):
+def process(mlx):
     text = u''
 
-    # unzip the docx in memory
-    zipf = zipfile.ZipFile(docx)
-    filelist = zipf.namelist()
-
-    # get header text
-    # there can be 3 header files in the zip
-    header_xmls = 'word/header[0-9]*.xml'
-    for fname in filelist:
-        if re.match(header_xmls, fname):
-            text += xml2text(zipf.read(fname))
+    # unzip the mlx in memory
+    zipf = zipfile.ZipFile(mlx)
 
     # get main text
-    doc_xml = 'word/document.xml'
+    doc_xml = 'matlab/document.xml'
     text += xml2text(zipf.read(doc_xml))
 
-    # get footer text
-    # there can be 3 footer files in the zip
-    footer_xmls = 'word/footer[0-9]*.xml'
-    for fname in filelist:
-        if re.match(footer_xmls, fname):
-            text += xml2text(zipf.read(fname))
-
-    if img_dir is not None:
-        # extract images
-        for fname in filelist:
-            _, extension = os.path.splitext(fname)
-            if extension in [".jpg", ".jpeg", ".png", ".bmp"]:
-                dst_fname = os.path.join(img_dir, os.path.basename(fname))
-                with open(dst_fname, "wb") as dst_f:
-                    dst_f.write(zipf.read(fname))
 
     zipf.close()
     return text.strip()
@@ -109,5 +77,5 @@ def process(docx, img_dir=None):
 
 if __name__ == '__main__':
     args = process_args()
-    text = process(args.docx, args.img_dir)
+    text = process(args.mlx)
     sys.stdout.write(text.encode('utf-8'))
